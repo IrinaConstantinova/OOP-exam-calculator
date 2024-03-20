@@ -2,7 +2,10 @@ package controller;
 
 import model.ComplexNumber;
 import model.repository.impl.ComplexCalculator;
+import model.util.Operations;
 import view.ComplexCalculatorView;
+import view.util.CommandsView;
+
 
 public class ComplexCalculatorController {
 
@@ -14,20 +17,37 @@ public class ComplexCalculatorController {
         this.calculator = calculator;
     }
 
-    public void performCalculation() {
-        System.out.println("Enter first complex number: ");
+    private void performCalculation() {
+
+        System.out.println("Please, enter first complex number");
         ComplexNumber num1 = view.getComplexNumber();
-        System.out.println("Enter second complex number: ");
+        System.out.println("Please, enter second complex number");
         ComplexNumber num2 = view.getComplexNumber();
+        Operations operation = view.getOperation();
+        ComplexNumber result;
+        switch (operation) {
+            case ADDITION -> result = calculator.add(num1, num2);
+            case SUBTRACTION -> result = calculator.subtract(num1, num2);
+            case MULTIPLICATION -> result = calculator.multiply(num1, num2);
+            case DIVISION -> result = calculator.divide(num1, num2);
+            default -> throw new IllegalArgumentException("Incorrect operation");
 
-        ComplexNumber sum = calculator.add(num1, num2);
-        ComplexNumber difference = calculator.subtract(num1, num2);
-        ComplexNumber product = calculator.multiply(num1, num2);
-        ComplexNumber quotient = calculator.divide(num1, num2);
+        }
+        view.displayResult(result);
 
-        view.displayResult("Sum", sum);
-        view.displayResult("Difference", difference);
-        view.displayResult("Product", product);
-        view.displayResult("Quotient", quotient);
     }
+
+    public void startingWorkCalculator(){
+        while (true){
+            CommandsView com = view.getCommandsView();
+            switch (com){
+                case START -> performCalculation();
+                case EXIT -> {
+                    return;
+                }
+            }
+        }
+    }
+
+
 }
